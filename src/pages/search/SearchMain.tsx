@@ -49,7 +49,7 @@ const useStyles = makeStyles((theme) => ({
     flexDirection: "row",
   },
   leftContainer: {
-    width: 110,
+    width: 100,
     borderRightWidth: 1,
     borderRightColor: theme.colors.grey5,
   },
