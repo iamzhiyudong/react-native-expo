@@ -7,13 +7,12 @@ import {
   Icon,
   Text,
   Tab,
-  Card,
 } from "@rneui/themed";
 import { View, ScrollView } from "react-native";
 import { data } from "./data";
 import MyCard from "./Card";
 
-export default function Home(): JSX.Element {
+export default function Home({ navigation }: { navigation: any }): JSX.Element {
   const { setMode, mode } = useThemeMode();
   const { theme } = useTheme();
   const styles = useStyles();
@@ -31,7 +30,11 @@ export default function Home(): JSX.Element {
           222听书网
         </Text>
         <View style={styles.searchBtnView}>
-          <Button type="clear" size="sm">
+          <Button
+            type="clear"
+            size="sm"
+            onPress={() => navigation.navigate("SearchPage")}
+          >
             <Icon name="search" type="ionicon" color={theme.colors.white} />
           </Button>
         </View>
@@ -43,7 +46,7 @@ export default function Home(): JSX.Element {
             value={index}
             onChange={(e) => setIndex(e)}
             indicatorStyle={{
-              backgroundColor: theme.colors.greyOutline,
+              backgroundColor: theme.colors.primary,
               height: 3,
             }}
             variant="primary"
@@ -52,7 +55,8 @@ export default function Home(): JSX.Element {
               <Tab.Item
                 key={index}
                 title={item.name}
-                titleStyle={{ fontSize: 13 }}
+                titleStyle={{ fontSize: 13, color: theme.colors.grey1 }}
+                buttonStyle={{ backgroundColor: "white" }}
               />
             ))}
           </Tab>
@@ -68,11 +72,10 @@ const useStyles = makeStyles((theme) => ({
   homeContainer: {
     flex: 1,
     display: "flex",
-    backgroundColor: theme.colors.background,
   },
   topBar: {
     width: "100%",
-    height: 50,
+    height: 60,
     backgroundColor: theme.colors.primary,
     display: "flex",
     flexDirection: "row",
@@ -85,7 +88,6 @@ const useStyles = makeStyles((theme) => ({
     width: 40,
   },
   typeView: {
-    backgroundColor: theme.colors.primary,
     display: "flex",
     height: 48,
   },
