@@ -11,6 +11,7 @@ import { useTheme } from "@rneui/themed";
 import Home from "./pages/home/Home";
 import Setting from "./pages/setting/Setting";
 import SearchPage from "./pages/search/Search";
+import PlayPage from "./pages/play/Play";
 
 const Tab = createBottomTabNavigator();
 const Stack = createStackNavigator();
@@ -51,25 +52,27 @@ export default function App() {
       <StatusBar backgroundColor={theme.colors.primary} />
       <NavigationContainer>
         <Stack.Navigator
-          screenOptions={{
-            // cardStyleInterpolator: CardStyleInterpolators.forHorizontalIOS,
-          }}
+          screenOptions={
+            {
+              // cardStyleInterpolator: CardStyleInterpolators.forHorizontalIOS,
+            }
+          }
         >
-          <Stack.Screen
-            name="SearchPage"
-            component={SearchPage}
-            options={{ headerShown: false }}
-          />
           <Stack.Screen
             name="Home"
             component={HomeTabs}
             options={{ headerShown: false }}
           />
-          {/* <Stack.Screen
+          <Stack.Screen
             name="SearchPage"
             component={SearchPage}
             options={{ headerShown: false }}
-          /> */}
+          />
+          <Stack.Screen
+            name="PlayPage"
+            component={PlayPage}
+            options={{ headerShown: false }}
+          />
         </Stack.Navigator>
       </NavigationContainer>
     </>

@@ -1,3 +1,4 @@
+import { useNavigation } from "@react-navigation/native";
 import { makeStyles, Image, Text, useTheme, Button } from "@rneui/themed";
 import {
   FlatList,
@@ -11,6 +12,7 @@ const BASE_URI = "https://source.unsplash.com/random?sig=";
 export default function ResultList(): JSX.Element {
   const styles = useStyles();
   const { theme } = useTheme();
+  const navigation = useNavigation<any>();
   return (
     <SafeAreaView>
       <FlatList
@@ -18,7 +20,10 @@ export default function ResultList(): JSX.Element {
         style={styles.list}
         keyExtractor={(e) => e}
         renderItem={({ item }) => (
-          <TouchableOpacity activeOpacity={0.8} onPress={() => console.log(111)}>
+          <TouchableOpacity
+            activeOpacity={0.8}
+            onPress={() => navigation.navigate("PlayPage")}
+          >
             <View style={styles.item}>
               <Image
                 containerStyle={styles.itemImage}

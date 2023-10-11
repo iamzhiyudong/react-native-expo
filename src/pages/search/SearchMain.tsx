@@ -35,9 +35,7 @@ export default function SearchMain(): JSX.Element {
       </View>
 
       <View style={styles.rightContainer}>
-        <ScrollView>
-          <ResultList />
-        </ScrollView>
+        <ResultList />
       </View>
     </View>
   );
