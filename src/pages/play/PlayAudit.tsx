@@ -6,30 +6,85 @@ import {
   Icon,
   Slider,
 } from "@rneui/themed";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { View } from "react-native";
+import { AVPlaybackStatus, Audio } from "expo-av";
+import { Sound } from "expo-av/build/Audio";
+import { millisToHhMmSs } from "../../utils";
 
 export default function PlayAudit(): JSX.Element {
   const styles = useStyles();
   const { theme } = useTheme();
 
-  const [value, setValue] = useState(0);
+  const [isPlay, setIsPlay] = useState(false);
+  const [soundInstance, setSoundInstance] = useState<Sound>();
+  const [positionMillisStr, setPositionMillisStr] = useState("00:00");
+  const [positionMillis, setPositionMillis] = useState(0);
+  const [durationMillisStr, setDurationMillisStr] = useState("00:00");
+  const [durationMillis, setDurationMillis] = useState(0);
+
+  async function playSound() {
+    if (soundInstance) {
+      if (isPlay) {
+        soundInstance.pauseAsync();
+      } else {
+        soundInstance.playAsync();
+      }
+      setIsPlay((cur) => !cur);
+      return;
+    }
+
+    const { sound } = await Audio.Sound.createAsync({
+      uri: "http://audio.xmcdn.com/group11/M05/57/27/wKgDa1XafiyA1uqtAMtP7BgtM7E504.m4a",
+    });
+    setSoundInstance(sound);
+    sound.setOnPlaybackStatusUpdate(onPlaybackStatusUpdate);
+
+    await sound.playAsync();
+    setIsPlay(true);
+  }
+
+  function onPlaybackStatusUpdate(status: AVPlaybackStatus) {
+    if (status.isLoaded) {
+      setDurationMillisStr(millisToHhMmSs(status.durationMillis || 0));
+      setDurationMillis(status.durationMillis || 0);
+      setPositionMillisStr(millisToHhMmSs(status.positionMillis || 0));
+      setPositionMillis(status.positionMillis || 0);
+
+      setIsPlay(status.isPlaying);
+    }
+  }
+
+  async function onChangePlayPosition(val: number) {
+    if (soundInstance) {
+      setPositionMillis(val);
+      soundInstance && (await soundInstance.setPositionAsync(val));
+    }
+  }
+
+  useEffect(() => {
+    return soundInstance
+      ? () => {
+          soundInstance.unloadAsync();
+        }
+      : undefined;
+  }, [soundInstance]);
 
   return (
     <View style={styles.container}>
       <Text numberOfLines={1}>正在播放：第七集</Text>
 
       <View style={styles.sliderView}>
-        <Text>00:00</Text>
+        <Text style={{ width: 45 }}>{positionMillisStr}</Text>
         <Slider
-          value={value}
-          onValueChange={setValue}
+          value={positionMillis}
+          onValueChange={(v) => onChangePlayPosition(v)}
           animationType="timing"
-          maximumValue={100}
+          maximumValue={durationMillis}
           minimumValue={0}
           style={{ flex: 1, marginLeft: 10, marginRight: 10 }}
           step={1}
-          allowTouchTrack
+          allowTouchTrack={soundInstance ? true : false}
           minimumTrackTintColor={theme.colors.primary}
           maximumTrackTintColor={theme.colors.grey5}
           trackStyle={{ height: 4, backgroundColor: "transparent" }}
@@ -47,10 +102,10 @@ export default function PlayAudit(): JSX.Element {
             ),
           }}
         />
-        <Text>23:00:00</Text>
+        <Text style={{ width: 45 }}>{durationMillisStr}</Text>
       </View>
 
-      <View style={styles.playBtnBox}>
+      <View style={styles.playBtnView}>
         <Button
           buttonStyle={styles.btnStyle}
           title="Outline"
@@ -65,9 +120,10 @@ export default function PlayAudit(): JSX.Element {
             title="Outline"
             type="outline"
             radius={50}
+            onPress={() => playSound()}
           >
-            <Icon name="play" type="ionicon" />
-            {/* <Icon name="pause" type="ionicon" /> */}
+            {!isPlay && <Icon name="play" type="ionicon" />}
+            {isPlay && <Icon name="pause" type="ionicon" />}
           </Button>
         </View>
         <Button
@@ -98,7 +154,7 @@ const useStyles = makeStyles((theme) => ({
     flexDirection: "row",
     alignItems: "center",
   },
-  playBtnBox: {
+  playBtnView: {
     display: "flex",
     flexDirection: "row",
     justifyContent: "center",

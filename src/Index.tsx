@@ -35,7 +35,7 @@ const HomeTabs = () => {
         headerShown: false,
       })}
     >
-      <Tab.Screen name="Home" component={Home} options={{ title: "首页" }} />
+      <Tab.Screen name="Home1" component={Home} options={{ title: "首页" }} />
       <Tab.Screen
         name="Settings"
         component={Setting}
@@ -58,7 +58,7 @@ export default function App() {
             }
           }
         >
-          <Stack.Screen
+          {/* <Stack.Screen
             name="Home"
             component={HomeTabs}
             options={{ headerShown: false }}
@@ -67,7 +67,7 @@ export default function App() {
             name="SearchPage"
             component={SearchPage}
             options={{ headerShown: false }}
-          />
+          /> */}
           <Stack.Screen
             name="PlayPage"
             component={PlayPage}

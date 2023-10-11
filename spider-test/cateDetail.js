@@ -12,6 +12,7 @@ async function main() {
       name: $(el).find(".tab-img > a").attr("title"),
       img: $(el).find(".tab-img > a > img").attr("src"),
       author: $($(el).find("dd")[1]).text(),
+      audio_author: $($(el).find("dd")[2]).text(),
       state: $($(el).find("dd")[3]).text(),
       type: $($(el).find("dd")[0]).text(),
     };
