@@ -36,7 +36,11 @@ export default function ResultList({ bookList }: Prop): JSX.Element {
               <Image
                 containerStyle={styles.itemImage}
                 source={{ uri: item.imgUrl }}
-                PlaceholderContent={<ActivityIndicator />}
+                PlaceholderContent={
+                  <ActivityIndicator
+                    style={{ width: "100%", height: "100%" }}
+                  />
+                }
               />
 
               <View style={styles.itemRightBox}>
@@ -75,7 +79,7 @@ export default function ResultList({ bookList }: Prop): JSX.Element {
                   {item.audioAuthor}
                 </Text>
 
-                <Text style={styles.tip}>{item.type}</Text>
+                <Text numberOfLines={1} style={styles.tip}>{item.type}</Text>
               </View>
             </View>
           </TouchableOpacity>
@@ -102,6 +106,7 @@ const useStyles = makeStyles((theme) => ({
     width: 110,
     height: 150,
     borderRadius: 3,
+    backgroundColor: theme.colors.grey5
   },
   itemRightBox: {
     paddingLeft: 10,

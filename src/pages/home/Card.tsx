@@ -1,6 +1,11 @@
 import { useNavigation } from "@react-navigation/native";
 import { Card, Text, makeStyles, useTheme } from "@rneui/themed";
-import { FlatList, TouchableOpacity, View } from "react-native";
+import {
+  ActivityIndicator,
+  FlatList,
+  TouchableOpacity,
+  View,
+} from "react-native";
 import { BookItem } from "../../spider/types";
 
 interface Prop {
@@ -32,6 +37,11 @@ export default function MyCard({ bookList }: Prop) {
                 source={{
                   uri: item.imgUrl,
                 }}
+                PlaceholderContent={
+                  <ActivityIndicator
+                    style={{ width: "100%", height: "100%" }}
+                  />
+                }
               >
                 <View style={styles.imageTextView}>
                   <Text

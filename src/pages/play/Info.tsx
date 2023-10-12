@@ -11,11 +11,17 @@ export default function Info({ bookDetail }: Prop): JSX.Element {
   const { theme } = useTheme();
   return (
     <View style={styles.container}>
-      <Image
-        containerStyle={styles.itemImage}
-        source={{ uri: bookDetail.img_url }}
-        PlaceholderContent={<ActivityIndicator />}
-      />
+      {bookDetail.img_url ? (
+        <Image
+          containerStyle={styles.itemImage}
+          source={{ uri: bookDetail.img_url }}
+          PlaceholderContent={
+            <ActivityIndicator style={{ width: "100%", height: "100%" }} />
+          }
+        />
+      ) : (
+        <View style={styles.noImageView} />
+      )}
 
       <View style={styles.itemRightBox}>
         <Text
@@ -53,7 +59,13 @@ export default function Info({ bookDetail }: Prop): JSX.Element {
           {bookDetail.audio_author}
         </Text>
 
-        <Text style={styles.tip}>{bookDetail.type}</Text>
+        {bookDetail.type ? (
+          <Text numberOfLines={1} style={styles.tip}>
+            {bookDetail.type}
+          </Text>
+        ) : (
+          ""
+        )}
       </View>
     </View>
   );
@@ -68,6 +80,13 @@ const useStyles = makeStyles((theme) => ({
     paddingLeft: 10,
     paddingRight: 10,
     backgroundColor: "white",
+  },
+  noImageView: {
+    width: 110,
+    height: 150,
+    borderRadius: 3,
+    overflow: "hidden",
+    backgroundColor: theme.colors.grey5,
   },
   itemImage: {
     width: 110,

@@ -1,10 +1,18 @@
 import React, { useEffect, useState } from "react";
-import { makeStyles, Button, useTheme, Icon, Text, Tab } from "@rneui/themed";
+import {
+  makeStyles,
+  Button,
+  useTheme,
+  Icon,
+  Text,
+  Tab,
+  Dialog,
+} from "@rneui/themed";
 import { View, ScrollView } from "react-native";
-import { data } from "./data";
 import MyCard from "./Card";
-import WoYao from "../../spider/WoYao";
+import MainSpider from "../../spider/Index";
 import { BookItem, CategoryItem } from "../../spider/types";
+import WebView from "react-native-webview";
 
 export default function Home({ navigation }: { navigation: any }): JSX.Element {
   const { theme } = useTheme();
@@ -13,16 +21,21 @@ export default function Home({ navigation }: { navigation: any }): JSX.Element {
   const [activeIndex, setActiveIndex] = useState(0);
   const [categoryList, setCategoryList] = useState<CategoryItem[]>([]);
   const [bookList, setBookList] = useState<BookItem[]>([]);
+  const [isLoading, setIsLoading] = useState(false);
 
-  const [woyao] = useState(new WoYao());
+  const [mainSpider] = useState(new MainSpider());
 
   useEffect(() => {
-    woyao.getCategoryList().then((res) => {
-      console.log("获取分类列表：", res.length);
-      setCategoryList(res);
-      getBookList();
-    });
-  }, [woyao]);
+    setIsLoading(true);
+    mainSpider
+      .getCategoryList()
+      .then((res) => {
+        console.log("获取分类列表：", res.length);
+        setCategoryList(res);
+        getBookList();
+      })
+      .finally(() => setIsLoading(false));
+  }, [mainSpider]);
 
   useEffect(() => {
     getBookList();
@@ -31,10 +44,14 @@ export default function Home({ navigation }: { navigation: any }): JSX.Element {
   function getBookList() {
     console.log("长度：", categoryList.length);
     if (categoryList.length) {
-      woyao.getCategoryBookList(categoryList[activeIndex].path).then((res) => {
-        console.log("获取书列表:", res.length);
-        setBookList(res);
-      });
+      setIsLoading(true);
+      mainSpider
+        .getCategoryBookList(categoryList[activeIndex].path)
+        .then((res) => {
+          console.log("获取书列表:", res.length);
+          setBookList(res);
+        })
+        .finally(() => setIsLoading(false));
     }
   }
 
@@ -81,6 +98,10 @@ export default function Home({ navigation }: { navigation: any }): JSX.Element {
       </View>
 
       <MyCard bookList={bookList} />
+
+      <Dialog isVisible={isLoading}>
+        <Dialog.Loading />
+      </Dialog>
     </View>
   );
 }

@@ -1,28 +1,37 @@
-import { makeStyles } from "@rneui/themed";
+import { Dialog, makeStyles } from "@rneui/themed";
 import React, { useState } from "react";
 import { View } from "react-native";
 import SearchTopBar from "./SearchTopBar";
 import SearchMain from "./SearchMain";
-import WoYao from "../../spider/WoYao";
+import MainSpider from "../../spider/Index";
 import { BookItem } from "../../spider/types";
 
 export default function SearchPage(): JSX.Element {
   const styles = useStyles();
-  const [woyao] = useState(new WoYao())
-  const [bookList, setBookList] = useState<BookItem[]>([])
+  const [mainSpider] = useState(new MainSpider());
+  const [bookList, setBookList] = useState<BookItem[]>([]);
+  const [isLoading, setIsLoading] = useState(false);
 
   function onSearch(word: string) {
     console.log("搜索词：", word);
-    woyao.search(word).then((res) => {
-      console.log("搜索成功：", res.length)
-      setBookList(res)
-    })
+    setIsLoading(true);
+    mainSpider
+      .search(word)
+      .then((res) => {
+        console.log("搜索成功：", res.length);
+        setBookList(res);
+      })
+      .finally(() => setIsLoading(false));
   }
 
   return (
     <View style={styles.container}>
       <SearchTopBar onSearch={onSearch} />
       <SearchMain bookList={bookList} />
+
+      <Dialog isVisible={isLoading}>
+        <Dialog.Loading />
+      </Dialog>
     </View>
   );
 }

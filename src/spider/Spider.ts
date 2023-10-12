@@ -23,5 +23,13 @@ class Spider {
   async getPlayUrl(path: string): Promise<string> {
     return "";
   }
+
+  async getWebviewUrl(path: string): Promise<string> {
+    return "";
+  }
+
+  getWebviewPlayUrlReg(): RegExp {
+    return / /g;
+  }
 }
 export default Spider;
