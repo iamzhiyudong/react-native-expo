@@ -11,6 +11,9 @@ import Info from "./Info";
 import PlayList from "./PlayList";
 import OptBar from "./OptBar";
 import PlayAudit from "./PlayAudit";
+import { useEffect, useState } from "react";
+import WoYao from "../../spider/WoYao";
+import { BookDetail } from "../../spider/types";
 
 export default function PlayPage({
   navigation,
@@ -19,6 +22,59 @@ export default function PlayPage({
 }): JSX.Element {
   const styles = useStyles();
   const { theme } = useTheme();
+  const [bookDetail, setBookDetail] = useState<BookDetail>({
+    name: "",
+    list: [],
+  });
+  const [playUrl, setPlayUrl] = useState("");
+  const [playName, setPlayName] = useState("");
+  const [playIndex, setPlayIndex] = useState(-1);
+
+  // const { detailPath } = route.params;
+  const detailPath = "/mp3/7899.html";
+
+  const [woyao] = useState(new WoYao());
+
+  useEffect(() => {
+    if (detailPath) {
+      woyao.getBookDetail(detailPath).then((res) => {
+        console.log("获取书详情：");
+        setBookDetail(res);
+      });
+    }
+  }, [detailPath]);
+
+  function onActiveUpdate(path: string, name: string, index: number) {
+    setPlayIndex(index);
+    woyao.getPlayUrl(path).then((res) => {
+      console.log("获取播放url: ", res);
+      if (res) {
+        setPlayUrl(res);
+        setPlayName(name);
+      }
+    });
+  }
+
+  function onPlayLast() {
+    if (playIndex <= 0) {
+      return;
+    }
+
+    const index = playIndex - 1;
+    const item = bookDetail.list[index];
+    onActiveUpdate(item.path, item.name, index);
+  }
+
+  function onPlayNext() {
+    if (playIndex >= bookDetail.list.length) {
+      return;
+    }
+
+    const index = playIndex + 1;
+    const item = bookDetail.list[index];
+    onActiveUpdate(item.path, item.name, index);
+  }
+
   return (
     <View style={styles.container}>
       <View style={styles.topBar}>
@@ -27,18 +83,27 @@ export default function PlayPage({
         </Button>
 
         <Text numberOfLines={1} style={styles.topTitle}>
-          首席医官首席医官首席医官首席医官首席医官首席医官
+          {bookDetail.name}
         </Text>
       </View>
 
-      <Info />
+      <Info bookDetail={bookDetail} />
       <Divider />
-      <OptBar />
+      <OptBar list={bookDetail.list} />
       <Divider />
 
-      <PlayList />
+      <PlayList
+        list={bookDetail.list}
+        onActiveUpdate={onActiveUpdate}
+        playIndex={playIndex}
+      />
 
-      <PlayAudit />
+      <PlayAudit
+        url={playUrl}
+        playName={playName}
+        onPlayLast={onPlayLast}
+        onPlayNext={onPlayNext}
+      />
     </View>
   );
 }

@@ -1,18 +1,27 @@
-abstract class AbstractSpider {
-  constructor() {
-    
+import { BookDetail, BookItem, CategoryItem } from "./types";
+
+class Spider {
+  async getCategoryList(): Promise<CategoryItem[]> {
+    return [];
   }
 
-  abstract getCategoryList(): { name: string; path: string }[];
+  async getCategoryBookList(path: string): Promise<BookItem[]> {
+    return [];
+  }
 
-  abstract getCategoryDetailList(): {
-    path: string;
-    name: string;
-    imgUrl: string;
-    author: string;
-    audioAuthor: string;
-    state: string;
-    type: string;
-  }[];
+  async search(word: string): Promise<BookItem[]> {
+    return [];
+  }
+
+  async getBookDetail(path: string): Promise<BookDetail> {
+    return {
+      name: "",
+      list: [],
+    };
+  }
+
+  async getPlayUrl(path: string): Promise<string> {
+    return "";
+  }
 }
-export default AbstractSpider;
+export default Spider;

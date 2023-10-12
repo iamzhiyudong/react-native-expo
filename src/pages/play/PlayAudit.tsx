@@ -12,7 +12,19 @@ import { AVPlaybackStatus, Audio } from "expo-av";
 import { Sound } from "expo-av/build/Audio";
 import { millisToHhMmSs } from "../../utils";
 
-export default function PlayAudit(): JSX.Element {
+interface Prop {
+  url: string;
+  playName: string;
+  onPlayLast(): void;
+  onPlayNext(): void;
+}
+
+export default function PlayAudit({
+  url,
+  playName,
+  onPlayLast,
+  onPlayNext,
+}: Prop): JSX.Element {
   const styles = useStyles();
   const { theme } = useTheme();
 
@@ -33,15 +45,6 @@ export default function PlayAudit(): JSX.Element {
       setIsPlay((cur) => !cur);
       return;
     }
-
-    const { sound } = await Audio.Sound.createAsync({
-      uri: "http://audio.xmcdn.com/group11/M05/57/27/wKgDa1XafiyA1uqtAMtP7BgtM7E504.m4a",
-    });
-    setSoundInstance(sound);
-    sound.setOnPlaybackStatusUpdate(onPlaybackStatusUpdate);
-
-    await sound.playAsync();
-    setIsPlay(true);
   }
 
   function onPlaybackStatusUpdate(status: AVPlaybackStatus) {
@@ -70,9 +73,42 @@ export default function PlayAudit(): JSX.Element {
       : undefined;
   }, [soundInstance]);
 
+  useEffect(() => {
+    if (url && !soundInstance) {
+      initAudioInstance();
+    } else if (url && soundInstance) {
+      changeAudioPlayUrl();
+    }
+  }, [url]);
+
+  async function initAudioInstance() {
+    // "http://audio.xmcdn.com/group11/M05/57/27/wKgDa1XafiyA1uqtAMtP7BgtM7E504.m4a"
+    const { sound } = await Audio.Sound.createAsync({
+      uri: url,
+    });
+    setSoundInstance(sound);
+    sound.setOnPlaybackStatusUpdate(onPlaybackStatusUpdate);
+
+    await sound.playAsync();
+    setIsPlay(true);
+  }
+
+  async function changeAudioPlayUrl() {
+    if (soundInstance) {
+      try {
+        await soundInstance.unloadAsync(); // 卸载当前音频
+        await soundInstance.loadAsync({ uri: url });
+        await soundInstance.playAsync();
+        setIsPlay(true);
+      } catch (error) {
+        console.error("播放音乐时出错:", error);
+      }
+    }
+  }
+
   return (
     <View style={styles.container}>
-      <Text numberOfLines={1}>正在播放：第七集</Text>
+      <Text numberOfLines={1}>{playName ? `正在播放：${playName}` : ""}</Text>
 
       <View style={styles.sliderView}>
         <Text style={{ width: 45 }}>{positionMillisStr}</Text>
@@ -111,6 +147,7 @@ export default function PlayAudit(): JSX.Element {
           title="Outline"
           type="outline"
           radius={50}
+          onPress={onPlayLast}
         >
           <Icon name="play-skip-back" type="ionicon" />
         </Button>
@@ -131,6 +168,7 @@ export default function PlayAudit(): JSX.Element {
           title="Outline"
           type="outline"
           radius={50}
+          onPress={onPlayNext}
         >
           <Icon name="play-skip-forward" type="ionicon" />
         </Button>

@@ -1,11 +1,18 @@
 import { Text, makeStyles } from "@rneui/themed";
 import { View } from "react-native";
+import { BookDetail } from "../../spider/types";
 
-export default function OptBar(): JSX.Element {
+interface Prop {
+  list: BookDetail["list"];
+}
+
+export default function OptBar({ list }: Prop): JSX.Element {
   const styles = useStyles();
   return (
     <View style={styles.container}>
-      <Text style={{ fontSize: 17, fontWeight: "bold" }}>目录·共1000集</Text>
+      <Text style={{ fontSize: 17, fontWeight: "bold" }}>
+        目录·共{list.length || 0}集
+      </Text>
     </View>
   );
 }

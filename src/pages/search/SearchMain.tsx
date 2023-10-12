@@ -2,11 +2,16 @@ import { Button, Text, makeStyles, useTheme } from "@rneui/themed";
 import { useState } from "react";
 import { ScrollView, View } from "react-native";
 import ResultList from "./ResultList";
+import { BookItem } from "../../spider/types";
 
-export default function SearchMain(): JSX.Element {
+interface Prop {
+  bookList: BookItem[];
+}
+
+export default function SearchMain({ bookList }: Prop): JSX.Element {
   const styles = useStyles();
   const { theme } = useTheme();
-  const data = [...Array(30)];
+  const data = [...Array(1)];
   const [activeId, setActiveId] = useState(0);
   return (
     <View style={styles.main}>
@@ -35,7 +40,7 @@ export default function SearchMain(): JSX.Element {
       </View>
 
       <View style={styles.rightContainer}>
-        <ResultList />
+        <ResultList bookList={bookList} />
       </View>
     </View>
   );

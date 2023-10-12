@@ -1,33 +1,41 @@
 import { Divider, Text, makeStyles, useTheme } from "@rneui/themed";
-import { useState } from "react";
 import { FlatList, TouchableOpacity, View } from "react-native";
+import { BookDetail } from "../../spider/types";
 
-export default function PlayList(): JSX.Element {
+interface Prop {
+  list: BookDetail["list"];
+  onActiveUpdate(path: string, playName: string, playIndex: number): void;
+  playIndex: number;
+}
+
+export default function PlayList({
+  list,
+  onActiveUpdate,
+  playIndex,
+}: Prop): JSX.Element {
   const styles = useStyles();
   const { theme } = useTheme();
-  const [activeId, setActiveId] = useState("");
 
-  const data = [...new Array(100)].map((_, index) => ({
-    name: `第${index + 1}集`,
-  }));
   return (
     <View style={{ flex: 1 }}>
       <FlatList
-        data={data}
+        data={list}
         contentContainerStyle={styles.flatList}
         numColumns={1}
         keyExtractor={(e) => e.name}
-        renderItem={({ item }) => (
+        renderItem={({ item, index }) => (
           <>
             <TouchableOpacity
               activeOpacity={0.5}
-              onPress={() => setActiveId(item.name)}
+              onPress={() => {
+                onActiveUpdate(list[index]?.path || "", item.name, index);
+              }}
             >
               <View
                 style={{
                   ...styles.listItem,
                   backgroundColor:
-                    item.name === activeId
+                    index === playIndex
                       ? theme.colors.primary
                       : theme.colors.background,
                 }}
@@ -36,7 +44,7 @@ export default function PlayList(): JSX.Element {
                   style={{
                     fontSize: 16,
                     color:
-                      item.name === activeId
+                      index === playIndex
                         ? theme.colors.white
                         : theme.colors.grey1,
                   }}

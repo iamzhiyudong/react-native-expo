@@ -1,0 +1,22 @@
+import * as cheerio from "cheerio";
+
+async function main() {
+  const res = await fetch("https://woyaotingshu.com/search.php?searchword=%E9%A6%96%E5%B8%AD%E5%8C%BB%E5%AE%982");
+  const html = await res.text();
+
+  const $ = await cheerio.load(html);
+  const $itemEls = $("#header > div.content > div.list-r > div.hotbox");
+  const itemObjs = Array.from($itemEls).map((el) => {
+    return {
+      path: $(el).find(".tab-img > a").attr("href"),
+      name: $(el).find(".tab-img > a").attr("title"),
+      img: $(el).find(".tab-img > a > img").attr("src"),
+      author: $($(el).find("dd")[1]).text(),
+      audio_author: $($(el).find("dd")[2]).text(),
+      state: $($(el).find("dd")[3]).text(),
+      type: $($(el).find("dd")[0]).text(),
+    };
+  });
+  console.log(itemObjs);
+}
+main();

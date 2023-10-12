@@ -1,21 +1,20 @@
 import { useNavigation } from "@react-navigation/native";
 import { Card, Text, makeStyles, useTheme } from "@rneui/themed";
 import { FlatList, TouchableOpacity, View } from "react-native";
+import { BookItem } from "../../spider/types";
 
-export default function MyCard() {
+interface Prop {
+  bookList: BookItem[];
+}
+export default function MyCard({ bookList }: Prop) {
   const styles = useStyles();
   const { theme } = useTheme();
-  const data = [...Array(30)].map((_, index) => ({
-    img: "https://awildgeographer.files.wordpress.com/2015/02/john_muir_glacier.jpg",
-    name: "首席医官首席医官首席医官首席医官" + index,
-    info: "连载至1000集",
-    desc: "首席医官首席医官首席医官首席医官",
-  }));
+
   const navigation = useNavigation<any>();
   return (
     <View style={{ flex: 1 }}>
       <FlatList
-        data={data}
+        data={bookList}
         contentContainerStyle={styles.flatList}
         numColumns={3}
         keyExtractor={(e) => e.name}
@@ -23,13 +22,15 @@ export default function MyCard() {
           <TouchableOpacity
             style={{ width: "33%" }}
             activeOpacity={0.5}
-            onPress={() => navigation.navigate("PlayPage")}
+            onPress={() => {
+              navigation.navigate("PlayPage", { detailPath: item.path });
+            }}
           >
             <Card key={index} containerStyle={styles.cardContainItem}>
               <Card.Image
                 style={styles.cardImage}
                 source={{
-                  uri: "https://awildgeographer.files.wordpress.com/2015/02/john_muir_glacier.jpg",
+                  uri: item.imgUrl,
                 }}
               >
                 <View style={styles.imageTextView}>
@@ -37,7 +38,7 @@ export default function MyCard() {
                     numberOfLines={1}
                     style={{ fontSize: 11, color: theme.colors.white }}
                   >
-                    连载至1000集
+                    {item.state}
                   </Text>
                 </View>
               </Card.Image>
@@ -50,7 +51,7 @@ export default function MyCard() {
                   overflow: "hidden",
                 }}
               >
-                首席医官首席医官首席医官首席医官
+                {item.name}
               </Text>
               <Text
                 numberOfLines={1}
@@ -60,7 +61,7 @@ export default function MyCard() {
                   overflow: "hidden",
                 }}
               >
-                首席医官首席医官首席医官首席医官
+                {item.author}
               </Text>
             </Card>
           </TouchableOpacity>

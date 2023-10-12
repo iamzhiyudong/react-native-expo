@@ -1,16 +1,19 @@
 import { makeStyles, Image, Text, useTheme } from "@rneui/themed";
 import { ActivityIndicator, View } from "react-native";
+import { BookDetail } from "../../spider/types";
 
-const BASE_URI = "https://source.unsplash.com/random?sig=";
+interface Prop {
+  bookDetail: BookDetail;
+}
 
-export default function Info(): JSX.Element {
+export default function Info({ bookDetail }: Prop): JSX.Element {
   const styles = useStyles();
   const { theme } = useTheme();
   return (
     <View style={styles.container}>
       <Image
         containerStyle={styles.itemImage}
-        source={{ uri: BASE_URI + 1 }}
+        source={{ uri: bookDetail.img_url }}
         PlaceholderContent={<ActivityIndicator />}
       />
 
@@ -23,19 +26,19 @@ export default function Info(): JSX.Element {
             fontWeight: "bold",
           }}
         >
-          首席医官
+          {bookDetail.name}
         </Text>
         <Text
           numberOfLines={1}
           style={{ fontSize: 14, color: theme.colors.grey1 }}
         >
-          作者：阿鹏
+          {bookDetail.author}
         </Text>
         <Text
           numberOfLines={1}
           style={{ fontSize: 14, color: theme.colors.grey1 }}
         >
-          更新至1000集
+          {bookDetail.status}
         </Text>
 
         <Text
@@ -47,10 +50,10 @@ export default function Info(): JSX.Element {
             marginTop: 10,
           }}
         >
-          你也可以使用alignItems样式设置为'flex-start'，它会使View的宽度自适应其内容的宽度。
+          {bookDetail.audio_author}
         </Text>
 
-        <Text style={styles.tip}>22听书网</Text>
+        <Text style={styles.tip}>{bookDetail.type}</Text>
       </View>
     </View>
   );

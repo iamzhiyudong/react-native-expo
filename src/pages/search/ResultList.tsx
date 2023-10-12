@@ -7,27 +7,35 @@ import {
   ActivityIndicator,
   TouchableOpacity,
 } from "react-native";
+import { BookItem } from "../../spider/types";
 
-const BASE_URI = "https://source.unsplash.com/random?sig=";
-export default function ResultList(): JSX.Element {
+interface Prop {
+  bookList: BookItem[];
+}
+
+// const BASE_URI = "https://source.unsplash.com/random?sig=";
+export default function ResultList({ bookList }: Prop): JSX.Element {
   const styles = useStyles();
   const { theme } = useTheme();
   const navigation = useNavigation<any>();
+
   return (
     <SafeAreaView>
       <FlatList
-        data={[...new Array(10)].map((_, i) => i.toString())}
+        data={bookList}
         style={styles.list}
-        keyExtractor={(e) => e}
+        keyExtractor={(e) => e.path}
         renderItem={({ item }) => (
           <TouchableOpacity
             activeOpacity={0.8}
-            onPress={() => navigation.navigate("PlayPage")}
+            onPress={() => {
+              navigation.navigate("PlayPage", { detailPath: item.path });
+            }}
           >
             <View style={styles.item}>
               <Image
                 containerStyle={styles.itemImage}
-                source={{ uri: BASE_URI + item }}
+                source={{ uri: item.imgUrl }}
                 PlaceholderContent={<ActivityIndicator />}
               />
 
@@ -40,19 +48,19 @@ export default function ResultList(): JSX.Element {
                     fontWeight: "bold",
                   }}
                 >
-                  首席医官
+                  {item.name}
                 </Text>
                 <Text
                   numberOfLines={1}
                   style={{ fontSize: 14, color: theme.colors.grey1 }}
                 >
-                  作者：阿鹏
+                  {item.author}
                 </Text>
                 <Text
                   numberOfLines={1}
                   style={{ fontSize: 14, color: theme.colors.grey1 }}
                 >
-                  更新至1000集
+                  {item.state}
                 </Text>
 
                 <Text
@@ -64,10 +72,10 @@ export default function ResultList(): JSX.Element {
                     marginTop: 10,
                   }}
                 >
-                  你也可以使用alignItems样式设置为'flex-start'，它会使View的宽度自适应其内容的宽度。
+                  {item.audioAuthor}
                 </Text>
 
-                <Text style={styles.tip}>22听书网</Text>
+                <Text style={styles.tip}>{item.type}</Text>
               </View>
             </View>
           </TouchableOpacity>
