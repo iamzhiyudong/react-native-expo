@@ -1,3 +1,10 @@
+# 截图
+![home](https://raw.githubusercontent.com/iamzhiyudong/react-native-expo/main/pic/home.png)
+![play](https://raw.githubusercontent.com/iamzhiyudong/react-native-expo/main/pic/play.png)
+![search](https://raw.githubusercontent.com/iamzhiyudong/react-native-expo/main/pic/search.png)
+
+---
+
 # @rneui/template
 
 ## React Native Elements Expo Template
