@@ -1,5 +1,5 @@
 import { useNavigation } from "@react-navigation/native";
-import { makeStyles, Image, Text, useTheme, Button } from "@rneui/themed";
+import { makeStyles, Image, Text, useTheme } from "@rneui/themed";
 import {
   FlatList,
   SafeAreaView,
@@ -13,7 +13,6 @@ interface Prop {
   bookList: BookItem[];
 }
 
-// const BASE_URI = "https://source.unsplash.com/random?sig=";
 export default function ResultList({ bookList }: Prop): JSX.Element {
   const styles = useStyles();
   const { theme } = useTheme();
@@ -79,7 +78,9 @@ export default function ResultList({ bookList }: Prop): JSX.Element {
                   {item.audioAuthor}
                 </Text>
 
-                <Text numberOfLines={1} style={styles.tip}>{item.type}</Text>
+                <Text numberOfLines={1} style={styles.tip}>
+                  {item.type}
+                </Text>
               </View>
             </View>
           </TouchableOpacity>
@@ -106,7 +107,7 @@ const useStyles = makeStyles((theme) => ({
     width: 110,
     height: 150,
     borderRadius: 3,
-    backgroundColor: theme.colors.grey5
+    backgroundColor: theme.colors.grey5,
   },
   itemRightBox: {
     paddingLeft: 10,

@@ -1,4 +1,4 @@
-import { Button, Text, makeStyles, useTheme } from "@rneui/themed";
+import { Button, makeStyles, useTheme } from "@rneui/themed";
 import { useState } from "react";
 import { ScrollView, View } from "react-native";
 import ResultList from "./ResultList";
@@ -10,12 +10,12 @@ interface Prop {
 
 export default function SearchMain({ bookList }: Prop): JSX.Element {
   const styles = useStyles();
-  const { theme } = useTheme();
-  const data = [...Array(1)];
-  const [activeId, setActiveId] = useState(0);
+  // const { theme } = useTheme();
+  // const data = [...Array(1)];
+  // const [activeId, setActiveId] = useState(0);
   return (
     <View style={styles.main}>
-      <View style={styles.leftContainer}>
+      {/* <View style={styles.leftContainer}>
         <ScrollView style={{ paddingTop: 5, paddingBottom: 50 }}>
           {data.map((item, index) => (
             <View
@@ -25,9 +25,6 @@ export default function SearchMain({ bookList }: Prop): JSX.Element {
                 paddingBottom: index === data.length - 1 ? 20 : 0,
               }}
             >
-              {/* <Text style={{ color: theme.colors.grey1, fontSize: 15 }}>
-                22听书网
-              </Text> */}
               <Button
                 type={activeId === index ? "solid" : "outline"}
                 onPress={() => setActiveId(index)}
@@ -37,7 +34,7 @@ export default function SearchMain({ bookList }: Prop): JSX.Element {
             </View>
           ))}
         </ScrollView>
-      </View>
+      </View> */}
 
       <View style={styles.rightContainer}>
         <ResultList bookList={bookList} />

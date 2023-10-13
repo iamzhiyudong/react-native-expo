@@ -8,7 +8,6 @@ import {
   SearchBar,
 } from "@rneui/themed";
 import { View } from "react-native";
-import SearchTitle from "./SearchBox";
 import { useState } from "react";
 
 interface Prop {
@@ -19,10 +18,10 @@ export default function SearchTopBar({ onSearch }: Prop): JSX.Element {
   const styles = useStyles();
   const { theme } = useTheme();
   const navigation = useNavigation();
-  const [searchWord, setSearchWord] = useState("");
+  const [searchWord, setSearchWord] = useState("首席医官");
 
   const handleSearch = () => {
-    onSearch(searchWord)
+    onSearch(searchWord);
   };
 
   return (

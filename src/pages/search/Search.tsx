@@ -13,8 +13,8 @@ export default function SearchPage(): JSX.Element {
   const [isLoading, setIsLoading] = useState(false);
 
   function onSearch(word: string) {
-    console.log("搜索词：", word);
     setIsLoading(true);
+    console.log("正在搜索---> ", word);
     mainSpider
       .search(word)
       .then((res) => {

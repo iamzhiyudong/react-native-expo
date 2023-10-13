@@ -12,10 +12,10 @@ import Info from "./Info";
 import PlayList from "./PlayList";
 import OptBar from "./OptBar";
 import PlayAudit from "./PlayAudit";
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useState } from "react";
 import MainSpider from "../../spider/Index";
 import { BookDetail } from "../../spider/types";
-import WebView from "react-native-webview";
+import WebViewSp from "../../components/WebViewSp";
 
 export default function PlayPage({
   navigation,
@@ -34,39 +34,34 @@ export default function PlayPage({
   const [playUrl, setPlayUrl] = useState("");
   const [playName, setPlayName] = useState("");
   const [playIndex, setPlayIndex] = useState(-1);
-
-  const [isShowWebView, setIsShowWebView] = useState(false);
-  // "https://m.ting55.com/book/14914-1"
   const [webviewUrl, setWebviewUrl] = useState("");
-  const webViewRef = useRef<WebView>(null);
-
+  const [isShowWebview, setIsShowWebview] = useState(false);
   const { detailPath } = route.params;
-  // const detailPath = "/mp3/7899.html";
 
   const [mainSpider] = useState(new MainSpider());
 
   useEffect(() => {
     if (detailPath) {
       setIsLoading(true);
+      console.log("获取书详情--->");
       mainSpider
         .getBookDetail(detailPath)
         .then((res) => {
-          console.log("获取书详情：");
+          console.log("获取书详情成功：");
           setBookDetail(res);
+
+          setTimeout(() => {
+            setIsShowWebview(true);
+          }, 1500);
         })
         .finally(() => setIsLoading(false));
     }
   }, [detailPath]);
 
-  const handleReload = () => {
-    if (webViewRef.current) {
-      webViewRef.current.reload();
-    }
-  };
-
   function onActiveUpdate(path: string, name: string, index: number) {
     setPlayIndex(index);
     setIsLoading(true);
+    console.log("获取播放url--->");
     mainSpider
       .getPlayUrl(path)
       .then((res) => {
@@ -85,19 +80,20 @@ export default function PlayPage({
       .finally(() => setIsLoading(false));
   }
 
-  useEffect(() => {
-    setIsShowWebView(true);
-  }, [webviewUrl]);
-
-  // useEffect(() => {
-  //   return () => {
-  //     // Stop loading and clear the WebView when component is unmounted
-  //     if (webViewRef.current) {
-  //       webViewRef.current.stopLoading();
-  //       webViewRef.current.injectJavaScript("window.stop();"); // Stop any running JavaScript
-  //     }
-  //   };
-  // }, []);
+  function onHtmlLoaded(html: string) {
+    console.log("webview回调---->");
+    console.log(html);
+    // const regex = /https:\/\/pp\.ting55\.com\/[^\s'"\\]+/g;
+    const regex = mainSpider.getWebviewPlayUrlReg();
+    const matchedUrls = html.match(regex);
+    if (matchedUrls) {
+      const firstMatchedUrl = matchedUrls[0];
+      setPlayUrl(firstMatchedUrl);
+      console.log(firstMatchedUrl);
+    } else {
+      setPlayName("--未获取到播放地址--");
+    }
+  }
 
   function onPlayLast() {
     if (playIndex <= 0) {
@@ -117,31 +113,6 @@ export default function PlayPage({
     const index = playIndex + 1;
     const item = bookDetail.list[index];
     onActiveUpdate(item.path, item.name, index);
-  }
-
-  const INJECTED_JAVASCRIPT = `(function() {
-      window.ReactNativeWebView.postMessage(JSON.stringify(document.documentElement.outerHTML));
-  })();`;
-
-  function onMessage(event: any) {
-    console.log("onMessage");
-    const html = event.nativeEvent.data;
-
-    // 定义正则表达式来匹配URL
-    // /https:\/\/pp\.ting55\.com\/[^\s'"]+/g
-    // const regex = mainSpider.getWebviewPlayUrlReg;
-    const regex = /http[s]?:\/\/[^\s]+?\.m4a/g;
-
-    // 匹配URL
-    const matchedUrls = html.match(regex);
-
-    if (matchedUrls) {
-      // 提取第一个匹配到的URL
-      const firstMatchedUrl = matchedUrls[0];
-      console.log(firstMatchedUrl?.replace(/\\/g, ""));
-      setPlayUrl(firstMatchedUrl?.replace(/\\/g, "") || "");
-      setIsShowWebView(false);
-    }
   }
 
   return (
@@ -178,16 +149,9 @@ export default function PlayPage({
         <Dialog.Loading />
       </Dialog>
 
-      {isShowWebView ? (
-        <View style={{ height: 0 }}>
-          <WebView
-            ref={webViewRef}
-            source={{ uri: webviewUrl }}
-            onMessage={onMessage}
-            injectedJavaScript={INJECTED_JAVASCRIPT}
-          />
-        </View>
-      ) : null}
+      {isShowWebview && (
+        <WebViewSp webviewUrl={webviewUrl} onHtmlLoaded={onHtmlLoaded} />
+      )}
     </View>
   );
 }

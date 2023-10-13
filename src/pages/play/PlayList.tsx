@@ -21,6 +21,7 @@ export default function PlayList({
       <FlatList
         data={list}
         contentContainerStyle={styles.flatList}
+        initialNumToRender={15}
         numColumns={1}
         keyExtractor={(e) => e.name}
         renderItem={({ item, index }) => (

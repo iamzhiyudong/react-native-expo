@@ -12,7 +12,6 @@ import { View, ScrollView } from "react-native";
 import MyCard from "./Card";
 import MainSpider from "../../spider/Index";
 import { BookItem, CategoryItem } from "../../spider/types";
-import WebView from "react-native-webview";
 
 export default function Home({ navigation }: { navigation: any }): JSX.Element {
   const { theme } = useTheme();
@@ -27,6 +26,7 @@ export default function Home({ navigation }: { navigation: any }): JSX.Element {
 
   useEffect(() => {
     setIsLoading(true);
+    console.log("正在获取分类列表--->");
     mainSpider
       .getCategoryList()
       .then((res) => {
@@ -42,9 +42,9 @@ export default function Home({ navigation }: { navigation: any }): JSX.Element {
   }, [activeIndex, categoryList]);
 
   function getBookList() {
-    console.log("长度：", categoryList.length);
     if (categoryList.length) {
       setIsLoading(true);
+      console.log("正在获书籍列表--->");
       mainSpider
         .getCategoryBookList(categoryList[activeIndex].path)
         .then((res) => {
@@ -59,7 +59,7 @@ export default function Home({ navigation }: { navigation: any }): JSX.Element {
     <View style={styles.homeContainer}>
       <View style={styles.topBar}>
         <Text style={{ color: theme.colors.white, fontSize: 18 }}>
-          我要听书网
+          我要听书
         </Text>
         <View style={styles.searchBtnView}>
           <Button

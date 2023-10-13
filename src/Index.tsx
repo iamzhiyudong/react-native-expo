@@ -2,10 +2,7 @@ import React from "react";
 import { StatusBar } from "react-native";
 import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
 import { NavigationContainer } from "@react-navigation/native";
-import {
-  CardStyleInterpolators,
-  createStackNavigator,
-} from "@react-navigation/stack";
+import { createStackNavigator } from "@react-navigation/stack";
 import Ionicons from "react-native-vector-icons/Ionicons";
 import { useTheme } from "@rneui/themed";
 import Home from "./pages/home/Home";
@@ -34,6 +31,7 @@ const HomeTabs = () => {
         tabBarInactiveTintColor: "gray",
         headerShown: false,
       })}
+      initialRouteName="Home1"
     >
       <Tab.Screen name="Home1" component={Home} options={{ title: "首页" }} />
       <Tab.Screen
@@ -51,13 +49,7 @@ export default function App() {
     <>
       <StatusBar backgroundColor={theme.colors.primary} />
       <NavigationContainer>
-        <Stack.Navigator
-          screenOptions={
-            {
-              // cardStyleInterpolator: CardStyleInterpolators.forHorizontalIOS,
-            }
-          }
-        >
+        <Stack.Navigator>
           <Stack.Screen
             name="Home"
             component={HomeTabs}

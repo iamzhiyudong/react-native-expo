@@ -18,8 +18,6 @@ class LianTing extends Spider {
     });
     const html = await res.text();
 
-    console.log(html);
-
     const $ = await cheerio.load(html);
     const $cateEls = $("#wrapper > header > nav > a");
     const cateObjs = Array.from($cateEls).map((el) => {
@@ -118,7 +116,7 @@ class LianTing extends Spider {
   }
 
   getWebviewPlayUrlReg(): RegExp {
-      return new RegExp(/https:\/\/pp\.ting55\.com\/[^\s'"]+/g)
+    return new RegExp(/https:\/\/pp\.ting55\.com\/[^\s'"\\]+/g);
   }
 
   async search(word: string): Promise<BookItem[]> {
