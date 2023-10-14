@@ -1,7 +1,7 @@
 # 截图
-![home](https://raw.githubusercontent.com/iizyd/react-native-expo/main/pic/home.png)
-![play](https://raw.githubusercontent.com/iizyd/react-native-expo/main/pic/play.png)
-![search](https://raw.githubusercontent.com/iizyd/react-native-expo/main/pic/search.png)
+![home](https://raw.githubusercontent.com/iizyd/react-native-expo-demo/main/pic/home.png)
+![play](https://raw.githubusercontent.com/iizyd/react-native-expo-demo/main/pic/play.png)
+![search](https://raw.githubusercontent.com/iizyd/react-native-expo-demo/main/pic/search.png)
 
 ---
 
